@@ -12,7 +12,7 @@ export default React.createClass({
           <li><NavLink to="/notes/1">Notes</NavLink></li>
         </ul>
 
-        <div style={{"margin-top": "10px"}}>
+        <div style={{"marginTop": "10px"}}>
           {this.props.children}
         </div>
       </div>
