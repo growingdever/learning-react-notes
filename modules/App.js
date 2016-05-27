@@ -9,9 +9,12 @@ export default React.createClass({
         <ul role="nav">
           <li><NavLink to="/" onlyActiveOnIndex>Home</NavLink></li>
           <li><NavLink to="/about">About</NavLink></li>
-          <li><NavLink to="/repos">Repos</NavLink></li>
+          <li><NavLink to="/notes/1">Notes</NavLink></li>
         </ul>
-        {this.props.children}
+
+        <div style={{"margin-top": "10px"}}>
+          {this.props.children}
+        </div>
       </div>
     )
   }
