@@ -4,12 +4,12 @@ import jQuery from 'jquery'
 
 
 export default React.createClass({
-  getInitialState: function () {
+  getInitialState() {
     return {
       data: []
     };
   },
-  componentDidMount: function() {
+  componentDidMount() {
     var url = 'http://localhost:5000/api/notes';
     jQuery.ajax({
       url: url,
