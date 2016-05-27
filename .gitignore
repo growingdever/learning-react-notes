@@ -1,5 +1,6 @@
 .idea/
 node_modules/
+venv/
 
 bundle.js
 *.bundle.js
