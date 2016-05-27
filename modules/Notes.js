@@ -1,5 +1,5 @@
 import React from 'react'
-import NavLink from './NavLink'
+import Note from './Note'
 import jQuery from 'jquery'
 
 
@@ -29,14 +29,7 @@ export default React.createClass({
         <h2>Notes</h2>
         <ul>
           {this.state.data.map(function (note) {
-            return (
-              <li key={note.id}>
-                <NavLink to="/notes/1">{note.title}</NavLink>
-                <p>
-                  {note.content}
-                </p>
-              </li>
-            );
+            return <Note key={note.id} data={note}/>;
           })}
         </ul>
         {this.props.children}
