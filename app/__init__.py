@@ -24,6 +24,7 @@ db.create_all()
 
 from app.utils.model import model_to_dict
 
+
 @app.route('/')
 def index():
     return 'Hello, World!'
@@ -49,13 +50,17 @@ def note(note_id):
 
 @app.route('/api/labels')
 def labels():
-    items = []
-    for i in range(0, 3):
-        items.append({
-            'id': i,
-            'title': 'label{}'.format(i),
-        })
+    return jsonify({
+        'items': [model_to_dict(item) for item in LabelModel.query.all()]
+    })
+
+
+@app.route('/api/label/<int:label_id>')
+def label(label_id):
+    item = LabelModel.query.filter(LabelModel.id == label_id).first()
+    if item is None:
+        raise NotFound
 
     return jsonify({
-        'items': labels['items']
+        'item': model_to_dict(item)
     })
