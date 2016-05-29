@@ -65,7 +65,9 @@ class APINotes(Resource):
 
         db.session.commit()
 
-        return jsonify(model_to_dict(new_note))
+        return jsonify({
+            'items': [model_to_dict(item) for item in NoteModel.query.all()]
+        })
 
 
 @api_root.resource('/api/notes/<int:note_id>')
@@ -99,7 +101,9 @@ class APILabels(Resource):
         db.session.add(new_label)
         db.session.commit()
 
-        return jsonify(model_to_dict(new_label))
+        return jsonify({
+            'items': [model_to_dict(item) for item in LabelModel.query.all()]
+        })
 
 
 @api_root.resource('/api/labels/<int:label_id>')
