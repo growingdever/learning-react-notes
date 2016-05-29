@@ -5,5 +5,7 @@ venv/
 bundle.js
 *.bundle.js
 
+*.pyc
+
 .DS_Store
 .python-version
