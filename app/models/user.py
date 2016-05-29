@@ -1,4 +1,5 @@
-import arrow
+import datetime
+
 from app import db
 
 
@@ -17,11 +18,11 @@ class UserModel(db.Model):
     )
     created_date = db.Column(
         db.TIMESTAMP,
-        default=arrow.utcnow,
+        default=datetime.datetime.utcnow,
         server_default=db.text('CURRENT_TIMESTAMP')
     )
     updated_date = db.Column(
         db.TIMESTAMP,
-        default=arrow.utcnow,
+        default=datetime.datetime.utcnow,
         server_default=db.text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
     )
