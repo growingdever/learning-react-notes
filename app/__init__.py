@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
-from flask.ext.cors import CORS
-from flask.ext.restful import Api, Resource
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from flask_restful import Api, Resource
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import NotFound, BadRequest
 
 app = Flask(__name__, static_folder='static')
