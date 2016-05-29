@@ -1,8 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask.ext.cors import CORS
 from flask.ext.restful import Api, Resource
 from flask.ext.sqlalchemy import SQLAlchemy
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
@@ -39,6 +39,34 @@ class APINotes(Resource):
             'items': [model_to_dict(item) for item in NoteModel.query.all()]
         })
 
+    def post(self):
+        data = request.get_json()
+        for key in ['title', 'content', 'label_ids']:
+            if key not in data:
+                raise BadRequest
+
+        title = data['title']
+        content = data['content']
+        label_ids = data['label_ids']
+
+        new_note = NoteModel(
+            user_id=1,
+            title=title,
+            content=content)
+        db.session.add(new_note)
+        db.session.commit()
+
+        for label_id in label_ids:
+            new_labelling = LabellingModel(
+                user_id=1,
+                note_id=new_note.id,
+                label_id=label_id)
+            db.session.add(new_labelling)
+
+        db.session.commit()
+
+        return jsonify(model_to_dict(new_note))
+
 
 @api_root.resource('/api/notes/<int:note_id>')
 class APINote(Resource):
@@ -59,6 +87,19 @@ class APILabels(Resource):
         return jsonify({
             'items': [model_to_dict(item) for item in LabelModel.query.all()]
         })
+
+    def post(self):
+        data = request.get_json()
+        if 'title' not in data:
+            raise BadRequest
+
+        new_label = LabelModel(
+            user_id=1,
+            title=data['title'])
+        db.session.add(new_label)
+        db.session.commit()
+
+        return jsonify(model_to_dict(new_label))
 
 
 @api_root.resource('/api/labels/<int:label_id>')
