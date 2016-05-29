@@ -27,15 +27,16 @@ export default React.createClass({
     this.setState({new_label_name: e.target.value});
   },
   createLabel(e) {
-    console.log('create ' + this.state.new_label_name);
     var url = 'http://localhost:5000/api/labels';
     jQuery.ajax({
       url: url,
       method: 'POST',
       dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ title: this.state.new_label_name }),
       cache: false,
       success: function (response) {
-        console.log(response);
+        this.setState({data: response.items});
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(url, status, err.toString());
