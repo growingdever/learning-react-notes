@@ -4,6 +4,6 @@ def model_to_dict(model):
 
     d = {}
     for column in model.__table__.columns:
-        d[column.name] = str(getattr(model, column.name))
+        d[column.name] = getattr(model, column.name)
 
     return d
