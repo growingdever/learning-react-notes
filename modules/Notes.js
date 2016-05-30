@@ -11,6 +11,10 @@ export default React.createClass({
   },
   componentDidMount() {
     var url = 'http://localhost:5000/api/notes';
+    if (this.props.label) {
+      url += '?label=' + this.props.label;
+    }
+
     jQuery.ajax({
       url: url,
       dataType: 'json',

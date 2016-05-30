@@ -1,6 +1,7 @@
 import React from 'react'
 import Label from './Label'
 import jQuery from 'jquery'
+import NavLink from './NavLink'
 
 
 export default React.createClass({
@@ -56,8 +57,9 @@ export default React.createClass({
         <button type="button" onClick={this.createLabel}>Create</button>
 
         <ul>
+          <li key={1}><NavLink to='/' onlyActiveOnIndex>모든 메모</NavLink></li>
           {this.state.data.map(function (label) {
-            return <Label key={label.id} data={label}/>;
+            return <li key={label.id}><NavLink to={{ pathname: '/', query: { label: label.title } }} onlyActiveOnIndex>{label.title}</NavLink></li>;
           })}
         </ul>
 

@@ -8,7 +8,7 @@ export default React.createClass({
     return (
       <div className="ui grid">
         <Labels/>
-        <Notes/>
+        <Notes label={this.props.location.query.label}/>
         <MyEditor onChange={this.onEditorChange}/>
       </div>
     )
