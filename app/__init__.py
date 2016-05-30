@@ -35,8 +35,21 @@ def index():
 @api_root.resource('/api/notes')
 class APINotes(Resource):
     def get(self):
+        notes = [model_to_dict(item) for item in NoteModel.query.all()]
+        note_ids = [item['id'] for item in notes]
+        labellings = db.session.query(LabelModel, LabellingModel). \
+            join(LabellingModel, LabelModel.id == LabellingModel.label_id). \
+            filter(LabellingModel.user_id == 1). \
+            filter(LabellingModel.note_id.in_(note_ids)). \
+            all()
+        for note in notes:
+            note['labels'] = [{
+                'id': item.LabelModel.id,
+                'title': item.LabelModel.title
+            } for item in labellings if item.LabellingModel.note_id == note['id']]
+
         return jsonify({
-            'items': [model_to_dict(item) for item in NoteModel.query.all()]
+            'items': notes
         })
 
     def post(self):
@@ -73,13 +86,21 @@ class APINotes(Resource):
 @api_root.resource('/api/notes/<int:note_id>')
 class APINote(Resource):
     def get(self, note_id):
-        print(note_id)
-        item = NoteModel.query.filter(NoteModel.id == note_id).first()
-        if item is None:
+        note = NoteModel.query.filter(NoteModel.id == note_id).first()
+        if note is None:
             raise NotFound
 
+        labellings = db.session.query(LabelModel, LabellingModel). \
+            join(LabellingModel, LabelModel.id == LabellingModel.label_id). \
+            filter(LabellingModel.user_id == 1). \
+            filter(LabellingModel.note_id == note_id). \
+            all()
+
+        note = model_to_dict(note)
+        note['labels'] = [{'id': item.LabelModel.id, 'title': item.LabelModel.title} for item in labellings]
+
         return jsonify({
-            'item': model_to_dict(item)
+            'item': note
         })
 
 
