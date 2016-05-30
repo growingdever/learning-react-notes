@@ -8,6 +8,11 @@ export default React.createClass({
         <p>
           {this.props.data.content}
         </p>
+        <ul>
+          {this.props.data.labels.map(function (label) {
+            return <li key={label.id}>{label.title}</li>;
+          })}
+        </ul>
       </li>
     )
   }
