@@ -45,7 +45,7 @@ export default React.createClass({
   },
   render() {
     return (
-      <div>
+      <div className="four wide column">
         <h2>Labels</h2>
 
         <input

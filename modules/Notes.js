@@ -52,7 +52,7 @@ export default React.createClass({
   },
   render() {
     return (
-      <div>
+      <div className="four wide column">
         <h2>Notes</h2>
 
         <input

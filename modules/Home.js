@@ -5,8 +5,7 @@ import Notes from './Notes'
 export default React.createClass({
   render() {
     return (
-      <div>
-        <div>Home</div>
+      <div className="ui grid">
         <Labels/>
         <Notes/>
       </div>
