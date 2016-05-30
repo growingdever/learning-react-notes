@@ -1,6 +1,7 @@
 import React from 'react'
 import Note from './Note'
 import jQuery from 'jquery'
+import MyEditor from './NoteDetail'
 
 
 export default React.createClass({
@@ -72,28 +73,35 @@ export default React.createClass({
   },
   render() {
     return (
-      <div className="four wide column">
-        <h2>Notes</h2>
+      <div className="twelve wide column">
+        <div className="ui grid">
+          <div className="six wide column">
+            <h2>Notes</h2>
 
-        <input
-          type="text"
-          placeholder="New note title"
-          value={this.state.new_note_title}
-          onChange={this.handleNewNoteTitleChange}/>
-        <textarea
-          type="text"
-          placeholder="New note content"
-          value={this.state.new_note_content}
-          onChange={this.handleNewNoteContentChange}/>
-        <button type="button" onClick={this.createNote}>Create</button>
+            <input
+              type="text"
+              placeholder="New note title"
+              value={this.state.new_note_title}
+              onChange={this.handleNewNoteTitleChange}/>
+            <textarea
+              type="text"
+              placeholder="New note content"
+              value={this.state.new_note_content}
+              onChange={this.handleNewNoteContentChange}/>
+            <button type="button" onClick={this.createNote}>Create</button>
 
-        <ul>
-          {this.state.data.map(function (note) {
-            return <Note key={note.id} data={note}/>;
-          })}
-        </ul>
+            <ul>
+              {this.state.data.map(function (note) {
+                return <Note key={note.id} data={note}/>;
+              })}
+            </ul>
 
-        {this.props.children}
+            {this.props.children}
+          </div>
+          <div className="ten wide column">
+            <MyEditor/>
+          </div>
+        </div>
       </div>
     )
   }

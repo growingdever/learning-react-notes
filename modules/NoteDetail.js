@@ -8,7 +8,7 @@ export default React.createClass({
   },
   render() {
     return (
-      <div className="eight wide column">
+      <div>
         <div className="ui grid note detail top">
           <div className="twelve wide column">
             <div className="ui huge transparent fluid input">
