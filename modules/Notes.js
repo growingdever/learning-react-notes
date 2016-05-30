@@ -6,13 +6,14 @@ import jQuery from 'jquery'
 export default React.createClass({
   getInitialState() {
     return {
+      label: this.props.label,
       data: []
     };
   },
-  componentDidMount() {
+  loadNotesFromServer(label) {
     var url = 'http://localhost:5000/api/notes';
-    if (this.props.label) {
-      url += '?label=' + this.props.label;
+    if (label) {
+      url += '?label=' + label;
     }
 
     jQuery.ajax({
@@ -21,11 +22,26 @@ export default React.createClass({
       cache: false,
       success: function(response) {
         this.setState({data: response.items});
+        this.forceUpdate();
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString());
       }.bind(this)
     });
+  },
+  componentDidMount() {
+    this.loadNotesFromServer();
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState({label: nextProps.label});
+  },
+  shouldComponentUpdate(nextProps, nextState) {
+    var flag = this.state.label !== nextState.label;
+    if (flag) {
+      this.loadNotesFromServer(nextState.label);
+    }
+
+    return flag;
   },
   handleNewNoteTitleChange(e) {
     this.setState({new_note_title: e.target.value});
