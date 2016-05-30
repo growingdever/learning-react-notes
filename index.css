@@ -1,3 +1,7 @@
 .active {
   color: green;
 }
+
+.note.detail.top {
+  margin-bottom: 5px;
+}
