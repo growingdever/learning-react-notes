@@ -35,8 +35,21 @@ def index():
 @api_root.resource('/api/notes')
 class APINotes(Resource):
     def get(self):
-        notes = [model_to_dict(item) for item in NoteModel.query.all()]
-        note_ids = [item['id'] for item in notes]
+        if 'label' not in request.args or request.args['label'].lower() == 'all':
+            notes = [model_to_dict(item) for item in NoteModel.query.filter(NoteModel.user_id == 1).all()]
+            note_ids = [item['id'] for item in notes]
+        else:
+            note_ids = db.session.query(LabellingModel.note_id.label('id')). \
+                join(LabelModel). \
+                filter(LabellingModel.user_id == 1). \
+                filter(LabelModel.title == request.args['label']). \
+                all()
+            note_ids = [int(item.id) for item in note_ids]
+            notes = [model_to_dict(item) for item in NoteModel.query.filter(NoteModel.id.in_(note_ids)).all()]
+
+        if len(notes) == 0:
+            raise NotFound
+
         labellings = db.session.query(LabelModel, LabellingModel). \
             join(LabellingModel, LabelModel.id == LabellingModel.label_id). \
             filter(LabellingModel.user_id == 1). \
