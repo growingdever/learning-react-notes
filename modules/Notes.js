@@ -53,36 +53,6 @@ export default React.createClass({
 
     this.setState(updatedState);
   },
-  handleNewNoteTitleChange(e) {
-    this.setState({new_note_title: e.target.value});
-  },
-  handleNewNoteContentChange(e) {
-    this.setState({new_note_content: e.target.value});
-  },
-  createNote(e) {
-    var url = 'http://localhost:5000/api/notes';
-    jQuery.ajax({
-      url: url,
-      method: 'POST',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        title: this.state.new_note_title,
-        content: this.state.new_note_content,
-        label_ids: []
-      }),
-      cache: false,
-      success: function (response) {
-        this.setState({data: response.items});
-        if (response.items.length > 0) {
-          this.setState({selectedNote: response.items[0]});
-        }
-      }.bind(this),
-      error: function (xhr, status, err) {
-        console.error(url, status, err.toString());
-      }.bind(this)
-    });
-  },
   onClickItem(note) {
     this.setState({selectedNote: note});
     this.forceUpdate();
@@ -95,29 +65,20 @@ export default React.createClass({
     this.setState({data: data});
   },
   render() {
-    console.log('Notes.render');
-
     return (
       <div className="twelve wide column">
         <div className="ui grid">
           <div className="six wide column">
-            <h2>Notes</h2>
-
-            <input
-              type="text"
-              placeholder="New note title"
-              value={this.state.new_note_title}
-              onChange={this.handleNewNoteTitleChange}/>
-            <textarea
-              type="text"
-              placeholder="New note content"
-              value={this.state.new_note_content}
-              onChange={this.handleNewNoteContentChange}/>
-            <button type="button" onClick={this.createNote}>Create</button>
-
-            <div className="ui list">
+            <div className="ui segments">
               {this.state.data.map(function (note) {
-                return <Note key={note.id} data={note} label={this.state.label} onClick={this.onClickItem}/>;
+                return (
+                    <Note
+                        key={note.id}
+                        data={note}
+                        label={this.state.label}
+                        onClick={this.onClickItem}
+                    />
+                );
               }.bind(this))}
             </div>
 

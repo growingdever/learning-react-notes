@@ -63,16 +63,15 @@ export default React.createClass({
     let controlButtons = null;
     if (this.state.mode == 'read') {
       controlButtons = (
-          <div className="mini right floated ui buttons">
-            <button className="ui green basic button">수정</button>
-            <button className="ui red basic button">삭제</button>
-          </div>
+        <div className="mini right floated ui buttons">
+          <button className="ui red basic button">삭제</button>
+        </div>
       );
     } else if (this.state.mode == 'edit') {
       controlButtons = (
-          <div className="mini right floated ui buttons">
-            <button className="ui green basic button" onClick={this._onClickSave}>저장</button>
-          </div>
+        <div className="mini right floated ui buttons">
+          <button className="ui green basic button" onClick={this._onClickSave}>저장</button>
+        </div>
       );
     }
 
@@ -80,7 +79,6 @@ export default React.createClass({
       <div
         onFocus={this.onFocusInput}
         onBlur={this.onBlurInput}>
-        <h5>{this.state.mode}</h5>
         <div className="ui grid note detail top">
           <div className="twelve wide column">
             <div className="ui huge transparent fluid input">
