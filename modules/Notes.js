@@ -1,6 +1,6 @@
 import React from 'react'
-import Note from './Note'
 import jQuery from 'jquery'
+import NoteListItem from './NoteListItem'
 import NoteDetail from './NoteDetail'
 
 
@@ -72,7 +72,7 @@ export default React.createClass({
             <div className="ui">
               {this.state.data.map(function (note) {
                 return (
-                    <Note
+                    <NoteListItem
                         key={note.id}
                         data={note}
                         label={this.state.label}
