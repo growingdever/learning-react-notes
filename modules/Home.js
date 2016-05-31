@@ -19,7 +19,9 @@ export default React.createClass({
   render() {
     return (
       <div className="ui grid">
-        <Labels/>
+        <Labels
+          label={this.state.label}
+        />
         <Notes
           noteId={this.state.noteId}
           label={this.state.label}

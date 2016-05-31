@@ -1,10 +1,14 @@
 import React from 'react'
+import { Link } from 'react-router'
 import Label from './Label'
 import jQuery from 'jquery'
-import NavLink from './NavLink'
 
 
 export default React.createClass({
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+  
   getInitialState() {
     return {
       data: []
@@ -45,10 +49,13 @@ export default React.createClass({
     });
   },
   render() {
+    let allLabelClassName = 'ui tag label';
+    if (this.props.label == undefined) {
+      allLabelClassName += ' blue';
+    }
+
     return (
       <div className="four wide column">
-        <h2>Labels</h2>
-
         <input
           type="text"
           placeholder="New label name"
@@ -56,12 +63,21 @@ export default React.createClass({
           onChange={this.handleNewLabelNameChange}/>
         <button type="button" onClick={this.createLabel}>Create</button>
 
-        <ul>
-          <li key={1}><NavLink to='/' onlyActiveOnIndex>모든 메모</NavLink></li>
+        <div className="ui relaxed divided list">
+          <div className="item">
+            <Link to="/" className={allLabelClassName}>모든 메모</Link>
+          </div>
           {this.state.data.map(function (label) {
-            return <li key={label.id}><NavLink to={{ pathname: '/', query: { label: label.title } }} onlyActiveOnIndex>{label.title}</NavLink></li>;
-          })}
-        </ul>
+            let active = false;
+            if (label.title == this.props.label) {
+              active = true;
+            }
+
+            return (
+              <Label key={label.id} active={active} title={label.title}/>
+            );
+          }.bind(this))}
+        </div>
 
         {this.props.children}
       </div>
