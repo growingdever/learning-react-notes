@@ -7,7 +7,8 @@ import MyEditor from './NoteDetail'
 export default React.createClass({
   getInitialState() {
     return {
-      data: []
+      data: [],
+      label: this.props.label
     };
   },
   loadNotesFromServer(label) {
@@ -16,15 +17,21 @@ export default React.createClass({
       url += '?label=' + label;
     }
 
+    console.log(url);
+
     jQuery.ajax({
       url: url,
       dataType: 'json',
       cache: false,
       success: function(response) {
-        this.setState({data: response.items});
+        let nextState = {
+          data: response.items
+        };
         if (response.items.length > 0) {
-          this.setState({selectedNote: response.items[0]});
+          nextState.selectedNote = response.items[0];
         }
+
+        this.setState(nextState);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString());
@@ -32,7 +39,7 @@ export default React.createClass({
     });
   },
   componentDidMount() {
-    this.loadNotesFromServer();
+    this.loadNotesFromServer(this.state.label);
   },
   componentWillReceiveProps(nextProps) {
     let updatedState = {
