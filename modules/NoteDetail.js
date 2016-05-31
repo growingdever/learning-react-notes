@@ -27,11 +27,10 @@ export default React.createClass({
     this.setState({mode: 'read'});
   },
   handleChangeTitle(e) {
-    this.setState({
-      data: {
-        title: e.target.value
-      }
-    });
+    let newData = this.state.data;
+    newData.title = e.target.value;
+
+    this.setState({data: newData});
   },
   onChangeEditorContent(content) {
     let prevData = this.state.data;
@@ -39,7 +38,25 @@ export default React.createClass({
     this.setState({data: prevData})
   },
   _onClickSave(e) {
-    console.log(this.state.data);
+    var url = 'http://localhost:5000/api/notes/' + this.state.data.id;
+    jQuery.ajax({
+      url: url,
+      method: 'PUT',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        title: this.state.data.title,
+        content: this.state.data.content,
+        label_ids: []
+      }),
+      cache: false,
+      success: function (response) {
+        this.setState({data: response.item});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(url, status, err.toString());
+      }.bind(this)
+    });
   },
   render() {
     let controlButtons = null;
