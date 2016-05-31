@@ -128,7 +128,7 @@ export default class RichStyleEditor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.content) {
+    if (nextProps.content && this.props.id != nextProps.id) {
       let contentState = stateFromHTML(nextProps.content);
       this.setState({editorState: EditorState.createWithContent(contentState)})
     }
