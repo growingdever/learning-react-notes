@@ -14,10 +14,9 @@ export default React.createClass({
   loadNotesFromServer(label) {
     var url = 'http://localhost:5000/api/notes';
     if (label) {
+      label = label.replace(' ', '+');
       url += '?label=' + label;
     }
-
-    console.log(url);
 
     jQuery.ajax({
       url: url,
