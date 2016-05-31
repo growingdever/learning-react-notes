@@ -69,7 +69,7 @@ export default React.createClass({
       <div className="twelve wide column">
         <div className="ui grid">
           <div className="six wide column">
-            <div className="ui segments">
+            <div className="ui">
               {this.state.data.map(function (note) {
                 return (
                     <Note

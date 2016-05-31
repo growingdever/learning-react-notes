@@ -3,6 +3,10 @@ import NavLink from './NavLink'
 
 
 export default React.createClass({
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   contentHTML() {
     let content = this.props.data.content;
     content = content.replace(/<[^>]*>/g, '');
@@ -19,19 +23,29 @@ export default React.createClass({
     };
   },
   render() {
-    let to = '/notes/' + this.props.data.id;
+    let pathname = '/notes/' + this.props.data.id;
     let query = {};
     if (this.props.label) {
       query.label = this.props.label;
     }
 
+    let to = {pathname, query};
+
+    let active = this.context.router.isActive(to, true);
+    let containerClassName;
+    if (active) {
+      containerClassName = 'ui blue segment';
+    } else {
+      containerClassName = 'ui segment';
+    }
+
     return (
-      <NavLink to={{ pathname: to, query: query }} className="note-list-item" onlyActiveOnIndex>
-        <div className="ui piled segment">
+      <div className={containerClassName}>
+        <NavLink to={to} className="note-list-item">
           <h4 className="ui header">{this.props.data.title}</h4>
           <div dangerouslySetInnerHTML={this.contentHTML()} />
-        </div>
-      </NavLink>
+        </NavLink>
+      </div>
     )
   }
 })
