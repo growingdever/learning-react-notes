@@ -1,7 +1,7 @@
 import React from 'react'
 import Note from './Note'
 import jQuery from 'jquery'
-import MyEditor from './NoteDetail'
+import NoteDetail from './NoteDetail'
 
 
 export default React.createClass({
@@ -87,7 +87,16 @@ export default React.createClass({
     this.setState({selectedNote: note});
     this.forceUpdate();
   },
+  onSaveNote(note) {
+    let data = this.state.data;
+    let targetIndex = data.findIndex(item => item.id == note.id);
+    data[targetIndex] = note;
+
+    this.setState({data: data});
+  },
   render() {
+    console.log('Notes.render');
+
     return (
       <div className="twelve wide column">
         <div className="ui grid">
@@ -115,8 +124,9 @@ export default React.createClass({
             {this.props.children}
           </div>
           <div className="ten wide column">
-            <MyEditor
-                data={this.state.selectedNote}
+            <NoteDetail
+              data={this.state.selectedNote}
+              onSaveNote={this.onSaveNote}
             />
           </div>
         </div>

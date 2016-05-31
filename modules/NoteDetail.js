@@ -13,9 +13,6 @@ export default React.createClass({
     }
   },
   componentWillReceiveProps(nextProps) {
-    console.log('NoteDetail.componentWillReceiveProps');
-    console.log(nextProps);
-
     if (nextProps.data) {
       this.setState({data: nextProps.data});
     }
@@ -52,6 +49,10 @@ export default React.createClass({
       cache: false,
       success: function (response) {
         this.setState({data: response.item});
+
+        if (this.props.onSaveNote) {
+          this.props.onSaveNote(response.item);
+        }
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(url, status, err.toString());
