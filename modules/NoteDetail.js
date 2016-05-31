@@ -3,8 +3,27 @@ import RichStyleEditor from './rich-style-editor/RichStyleEditor'
 
 
 export default React.createClass({
+  getInitialState() {
+    return {
+      data: {
+        title: null,
+        content: null
+      }
+    }
+  },
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data) {
+      this.setState({data: nextProps.data});
+    }
+  },
+  handleChangeTitle(e) {
+    this.setState({
+      data: {
+        title: e.target.value
+      }
+    });
+  },
   onChangeEditorContent(content) {
-    console.log(content);
   },
   render() {
     return (
@@ -12,7 +31,12 @@ export default React.createClass({
         <div className="ui grid note detail top">
           <div className="twelve wide column">
             <div className="ui huge transparent fluid input">
-              <input type="text" placeholder="제목을 입력해주세요"/>
+              <input
+                type="text"
+                placeholder="제목을 입력해주세요"
+                value={this.state.data.title}
+                onChange={this.handleChangeTitle}
+              />
             </div>
           </div>
           <div className="right floated four wide column">
@@ -22,7 +46,10 @@ export default React.createClass({
             </div>
           </div>
         </div>
-        <RichStyleEditor onChangeContent={this.onChangeEditorContent}/>
+        <RichStyleEditor
+            content={this.state.data.content}
+            onChangeContent={this.onChangeEditorContent}
+        />
       </div>
     )
   }

@@ -71,6 +71,10 @@ export default React.createClass({
       }.bind(this)
     });
   },
+  onClickItem(note) {
+    this.setState({selectedNote: note});
+    this.forceUpdate();
+  },
   render() {
     return (
       <div className="twelve wide column">
@@ -90,16 +94,18 @@ export default React.createClass({
               onChange={this.handleNewNoteContentChange}/>
             <button type="button" onClick={this.createNote}>Create</button>
 
-            <ul>
+            <div className="ui list">
               {this.state.data.map(function (note) {
-                return <Note key={note.id} data={note}/>;
-              })}
-            </ul>
+                return <Note key={note.id} data={note} onClick={this.onClickItem}/>;
+              }.bind(this))}
+            </div>
 
             {this.props.children}
           </div>
           <div className="ten wide column">
-            <MyEditor/>
+            <MyEditor
+                data={this.state.selectedNote}
+            />
           </div>
         </div>
       </div>

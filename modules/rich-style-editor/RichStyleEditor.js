@@ -1,5 +1,6 @@
 import React from 'react'
 import {Editor, EditorState, RichUtils} from 'draft-js';
+import {stateFromHTML} from 'draft-js-import-html'
 import {stateToHTML} from 'draft-js-export-html';
 require('../../node_modules/draft-js/dist/Draft.css');
 require('./rich-style-editor.css');
@@ -124,6 +125,13 @@ export default class RichStyleEditor extends React.Component {
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.content) {
+      let contentState = stateFromHTML(nextProps.content);
+      this.setState({editorState: EditorState.createWithContent(contentState)})
+    }
   }
 
   _handleKeyCommand(command) {
