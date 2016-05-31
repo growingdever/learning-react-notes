@@ -1,12 +1,17 @@
 import React from 'react'
+import NavLink from './NavLink'
+
 
 export default React.createClass({
-  onClick(e) {
-    this.props.onClick(this.props.data);
-  },
   render() {
+    let to = '/notes/' + this.props.data.id;
+    let query = {};
+    if (this.props.label) {
+      query.label = this.props.label;
+    }
+
     return (
-      <a className="item" onClick={this.onClick}>
+      <NavLink to={{ pathname: to, query: query }} onlyActiveOnIndex>
         <h4>{this.props.data.title}</h4>
         <div>
           {this.props.data.content}
@@ -16,7 +21,7 @@ export default React.createClass({
             return <li key={label.id}>{label.title}</li>;
           })}
         </ul>
-      </a>
+      </NavLink>
     )
   }
 })

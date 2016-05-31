@@ -10,6 +10,7 @@ render((
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
       <Route path="/about" component={About}/>
+      <Route path="/notes/:noteId" component={Home}/>
     </Route>
   </Router>
 ), document.getElementById('app'));

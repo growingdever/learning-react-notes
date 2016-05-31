@@ -7,7 +7,6 @@ import MyEditor from './NoteDetail'
 export default React.createClass({
   getInitialState() {
     return {
-      label: this.props.label,
       data: []
     };
   },
@@ -23,7 +22,9 @@ export default React.createClass({
       cache: false,
       success: function(response) {
         this.setState({data: response.items});
-        this.forceUpdate();
+        if (response.items.length > 0) {
+          this.setState({selectedNote: response.items[0]});
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString());
@@ -34,15 +35,17 @@ export default React.createClass({
     this.loadNotesFromServer();
   },
   componentWillReceiveProps(nextProps) {
-    this.setState({label: nextProps.label});
-  },
-  shouldComponentUpdate(nextProps, nextState) {
-    var flag = this.state.label !== nextState.label;
-    if (flag) {
-      this.loadNotesFromServer(nextState.label);
+    let updatedState = {
+      label: nextProps.label
+    };
+
+    if (nextProps.label != this.state.label) {
+      this.loadNotesFromServer(nextProps.label);
+    } else {
+      updatedState.selectedNote = this.state.data.find(item => item.id == nextProps.noteId);
     }
 
-    return flag;
+    this.setState(updatedState);
   },
   handleNewNoteTitleChange(e) {
     this.setState({new_note_title: e.target.value});
@@ -65,6 +68,9 @@ export default React.createClass({
       cache: false,
       success: function (response) {
         this.setState({data: response.items});
+        if (response.items.length > 0) {
+          this.setState({selectedNote: response.items[0]});
+        }
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(url, status, err.toString());
@@ -96,7 +102,7 @@ export default React.createClass({
 
             <div className="ui list">
               {this.state.data.map(function (note) {
-                return <Note key={note.id} data={note} onClick={this.onClickItem}/>;
+                return <Note key={note.id} data={note} label={this.state.label} onClick={this.onClickItem}/>;
               }.bind(this))}
             </div>
 
