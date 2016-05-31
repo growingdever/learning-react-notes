@@ -116,6 +116,52 @@ class APINote(Resource):
             'item': note
         })
 
+    def put(self, note_id):
+        data = request.get_json()
+        for key in ['title', 'content', 'label_ids']:
+            if key not in data:
+                raise BadRequest
+
+        note = NoteModel.query.filter(NoteModel.id == note_id).first()
+        if note is None:
+            raise NotFound
+
+        title = data['title']
+        content = data['content']
+        label_ids = data['label_ids']
+
+        labellings = LabellingModel.query. \
+            filter(LabellingModel.user_id == 1). \
+            filter(LabellingModel.note_id == note_id). \
+            all()
+        for item in labellings:
+            db.session.delete(item)
+
+        for label_id in label_ids:
+            new_labelling = LabellingModel(
+                user_id=1,
+                note_id=note_id,
+                label_id=label_id)
+            db.session.add(new_labelling)
+
+        note.title = title
+        note.content = content
+
+        db.session.commit()
+
+        labellings = db.session.query(LabelModel, LabellingModel). \
+            join(LabellingModel, LabelModel.id == LabellingModel.label_id). \
+            filter(LabellingModel.user_id == 1). \
+            filter(LabellingModel.note_id == note_id). \
+            all()
+
+        note = model_to_dict(note)
+        note['labels'] = [{'id': item.LabelModel.id, 'title': item.LabelModel.title} for item in labellings]
+
+        return jsonify({
+            'item': note
+        })
+
 
 @api_root.resource('/api/labels')
 class APILabels(Resource):
