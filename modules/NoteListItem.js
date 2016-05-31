@@ -1,4 +1,5 @@
 import React from 'react'
+import Moment from 'moment'
 import NavLink from './NavLink'
 
 
@@ -34,18 +35,32 @@ export default React.createClass({
     let active = this.context.router.isActive(to, true);
     let containerClassName;
     if (active) {
-      containerClassName = 'ui blue segment';
+      containerClassName = 'item note-list-item';
     } else {
-      containerClassName = 'ui segment';
+      containerClassName = 'item note-list-item';
     }
 
+    var now = Moment.utc();
+    var updated = Moment(new Date(this.props.data.updated_date));
+    var updatedHumanized = Moment.duration(now - updated).humanize() + ' ago';
+
     return (
-      <div className={containerClassName}>
-        <NavLink to={to} className="note-list-item">
-          <h4 className="ui header">{this.props.data.title}</h4>
-          <div dangerouslySetInnerHTML={this.contentHTML()} />
-        </NavLink>
-      </div>
+      <NavLink to={to} className={containerClassName}>
+        <div className="content">
+          <h4 className="header">{this.props.data.title}</h4>
+          <div className="meta">
+            <span>{updatedHumanized}</span>
+          </div>
+          <div className="description" dangerouslySetInnerHTML={this.contentHTML()}/>
+          <div className="extra">
+            <div className="ui tag labels">
+              {this.props.data.labels.map(function (label) {
+                return (<div key={label.id} className="ui label">{label.title}</div>);
+              }.bind(this))}
+            </div>
+          </div>
+        </div>
+      </NavLink>
     )
   }
 })

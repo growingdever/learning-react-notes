@@ -1,3 +1,13 @@
+.ui.divided.items > .item.note-list-item:first-child {
+  padding-top: 10px !important;
+}
+.ui.divided.items > .item.note-list-item {
+  padding: 10px;
+}
+.ui.divided.items > .item.note-list-item.active {
+  background-color: #fafafa;
+}
+
 .note.detail.top {
   margin-bottom: 5px;
 }
