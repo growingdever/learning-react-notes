@@ -8,7 +8,6 @@ export default React.createClass({
   getInitialState() {
     return {
       data: [],
-      label: this.props.label,
       totalLabels: []
     };
   },
@@ -43,17 +42,19 @@ export default React.createClass({
     });
   },
   componentDidMount() {
-    this.loadNotesFromServer(this.state.label);
+    this.loadNotesFromServer(this.props.currentLabel);
   },
   componentWillReceiveProps(nextProps) {
     let updatedState = {
-      label: nextProps.label,
+      currentLabel: nextProps.currentLabel,
       totalLabels: nextProps.totalLabels
     };
 
-    if (nextProps.label != this.state.label) {
-      this.loadNotesFromServer(nextProps.label);
-    } else {
+    if (nextProps.currentLabel != this.state.currentLabel) {
+      this.loadNotesFromServer(nextProps.currentLabel);
+    }
+
+    if (nextProps.noteId) {
       updatedState.selectedNote = this.state.data.find(item => item.id == nextProps.noteId);
     }
 
@@ -81,7 +82,7 @@ export default React.createClass({
                     <NoteListItem
                         key={note.id}
                         data={note}
-                        label={this.state.label}
+                        label={this.state.currentLabel}
                         onClick={this.onClickItem}
                     />
                 );

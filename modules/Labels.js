@@ -53,7 +53,7 @@ export default React.createClass({
   },
   render() {
     let allLabelClassName = 'ui tag label';
-    if (this.props.label == undefined) {
+    if (this.props.currentLabel == undefined) {
       allLabelClassName += ' blue';
     }
 
@@ -72,7 +72,7 @@ export default React.createClass({
           </div>
           {this.state.data.map(function (label) {
             let active = false;
-            if (label.title == this.props.label) {
+            if (label.title == this.props.currentLabel) {
               active = true;
             }
 

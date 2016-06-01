@@ -7,13 +7,13 @@ export default React.createClass({
   getInitialState() {
     return {
       noteId: this.props.params.noteId,
-      label: this.props.location.query.label
+      currentLabel: this.props.location.query.label
     }
   },
   componentWillReceiveProps(nextProps) {
     this.setState({
       noteId: nextProps.params.noteId,
-      label: nextProps.location.query.label
+      currentLabel: nextProps.location.query.label
     });
   },
   onLoadLabels(labels) {
@@ -23,12 +23,12 @@ export default React.createClass({
     return (
       <div className="ui grid">
         <Labels
-          label={this.state.label}
+          currentLabel={this.state.currentLabel}
           onLoadLabels={this.onLoadLabels}
         />
         <Notes
           noteId={this.state.noteId}
-          label={this.state.label}
+          currentLabel={this.state.currentLabel}
           totalLabels={this.state.totalLabels}
         />
       </div>
