@@ -206,9 +206,31 @@ class APILabels(Resource):
 @api_root.resource('/api/labels/<int:label_id>')
 class APILabel(Resource):
     def get(self, label_id):
-        item = LabelModel.query.filter(LabelModel.id == label_id).first()
+        item = LabelModel.query. \
+            filter(LabelModel.user_id == 1). \
+            filter(LabelModel.id == label_id). \
+            first()
         if item is None:
             raise NotFound
+
+        return jsonify({
+            'item': model_to_dict(item)
+        })
+
+    def put(self, label_id):
+        data = request.get_json()
+        if 'title' not in data:
+            raise BadRequest
+
+        item = LabelModel.query. \
+            filter(LabelModel.user_id == 1). \
+            filter(LabelModel.id == label_id). \
+            first()
+        if item is None:
+            raise NotFound
+
+        item.title = data['title']
+        db.session.commit()
 
         return jsonify({
             'item': model_to_dict(item)
