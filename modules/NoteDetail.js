@@ -31,7 +31,9 @@ export default React.createClass({
         this.setState({selectedLabels: null});
       }
 
-      $('.ui.dropdown.label').dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
+      $('.ui.dropdown.label')
+          .dropdown('clear')
+          .dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
     }
 
     if (nextProps.totalLabels) {
