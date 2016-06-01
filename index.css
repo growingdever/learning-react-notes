@@ -11,3 +11,8 @@
 .note.detail.top {
   margin-bottom: 5px;
 }
+
+.ui.dropdown.label-selection {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

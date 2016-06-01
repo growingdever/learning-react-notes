@@ -18,7 +18,7 @@ export default React.createClass({
   },
   componentDidMount() {
     // TODO : not working for jQuery('$' is loaded by index.html)
-    $('.ui.dropdown.label').dropdown({
+    $('.ui.dropdown.label-selection').dropdown({
       action: 'activate',
       onChange: this.onSelectLabel
     });
@@ -31,7 +31,7 @@ export default React.createClass({
         this.setState({selectedLabels: null});
       }
 
-      $('.ui.dropdown.label')
+      $('.ui.dropdown.label-selection')
           .dropdown('clear')
           .dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
     }
@@ -105,7 +105,7 @@ export default React.createClass({
     }
 
     let selections = (
-      <select name="labels" multiple className="ui fluid selection dropdown label">
+      <select name="labels" multiple className="ui fluid selection dropdown label-selection">
         {this.state.totalLabels.map(function (label) {
           return (<option key={label.id} value={label.id}>{label.title}</option>);
         }.bind(this))}
