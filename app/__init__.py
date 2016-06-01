@@ -235,3 +235,27 @@ class APILabel(Resource):
         return jsonify({
             'item': model_to_dict(item)
         })
+
+    def delete(self, label_id):
+        item = LabelModel.query. \
+            filter(LabelModel.user_id == 1). \
+            filter(LabelModel.id == label_id). \
+            first()
+        if item is None:
+            raise NotFound
+
+        labellings = LabellingModel.query. \
+            filter(LabellingModel.user_id == 1). \
+            filter(LabellingModel.label_id == label_id). \
+            all()
+        for item in labellings:
+            db.session.delete(item)
+
+        label = LabelModel.query.filter(LabelModel.user_id == 1).filter(LabelModel.id == label_id).first()
+        db.session.delete(label)
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True
+        })
