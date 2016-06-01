@@ -20,7 +20,6 @@ export default React.createClass({
   componentDidMount() {
     // TODO : not working for jQuery('$' is loaded by index.html)
     $('.ui.dropdown.label-selection').dropdown({
-      action: 'activate',
       onChange: this.onSelectLabel
     });
   },
