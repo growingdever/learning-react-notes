@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router'
 import jQuery from 'jquery'
-import CreateLabelModal from './CreateLabelModal'
 import Label from './Label'
+import CreateLabelModal from './CreateLabelModal'
+import ModifyLabelTitleModal from './ModifyLabelTitleModal'
 
 
 export default React.createClass({
@@ -42,23 +43,11 @@ export default React.createClass({
         .modal('show');
   },
   onClickModifyTitle(label) {
-    var url = 'http://localhost:5000/api/labels/' + label.id;
-    jQuery.ajax({
-      url: url,
-      method: 'PUT',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        title: 'test1'
-      }),
-      cache: false,
-      success: function (response) {
-        this.loadLabelsFromServer();
-      }.bind(this),
-      error: function (xhr, status, err) {
-        console.error(url, status, err.toString());
-      }.bind(this)
-    });
+    $('.ui.modal.modify-label-title')
+        .modal({detachable: false})
+        .modal('show');
+    
+    this.setState({targetModifyLabel: label});
   },
   render() {
     let allLabelClassName = 'ui tag label';
@@ -73,18 +62,17 @@ export default React.createClass({
         </button>
 
         <CreateLabelModal onCreateLabel={this.loadLabelsFromServer}/>
+        <ModifyLabelTitleModal label={this.state.targetModifyLabel} onSuccess={this.loadLabelsFromServer}/>
 
         <div className="ui relaxed divided list">
           <div className="item">
             <Link to="/" className={allLabelClassName}>모든 메모</Link>
           </div>
           {this.state.data.map(function (label) {
-            let active = label.title == this.props.currentLabel;
-
             return (
               <Label
                   key={label.id}
-                  active={active}
+                  active={label.title == this.props.currentLabel}
                   label={label}
                   onClickModifyTitle={this.onClickModifyTitle}
               />

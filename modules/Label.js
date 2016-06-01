@@ -9,9 +9,21 @@ export default React.createClass({
     }
   },
   render() {
-    var className = 'ui tag label';
+    let className = 'ui tag label';
     if (this.props.active) {
       className += ' blue';
+    }
+
+    let buttons = null;
+    if (!this.props.active) {
+      buttons = (
+        <div className="item right floated">
+          <div className="ui mini basic icon buttons">
+            <button className="ui button" onClick={this.onClickModifyTitleButton}><i className="write icon"></i></button>
+            <button className="ui button"><i className="trash icon"></i></button>
+          </div>
+        </div>
+      );
     }
 
     return (
@@ -22,12 +34,7 @@ export default React.createClass({
             className={className}>{this.props.label.title}
           </Link>
         </div>
-        <div className="item right floated">
-          <div className="ui mini basic icon buttons">
-            <button className="ui button" onClick={this.onClickModifyTitleButton}><i className="write icon"></i></button>
-            <button className="ui button"><i className="trash icon"></i></button>
-          </div>
-        </div>
+        {buttons}
       </div>
     )
   }
