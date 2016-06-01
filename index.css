@@ -8,6 +8,10 @@
   background-color: #fafafa;
 }
 
+.ui.divided.items > .item.note-list-item > a {
+  width: 100%;
+}
+
 .note.detail.top {
   margin-bottom: 5px;
 }

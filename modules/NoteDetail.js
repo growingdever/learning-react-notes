@@ -87,6 +87,23 @@ export default React.createClass({
       }.bind(this)
     });
   },
+  onClickRemove(e) {
+    var url = 'http://localhost:5000/api/notes/' + this.state.data.id;
+    jQuery.ajax({
+      url: url,
+      method: 'DELETE',
+      dataType: 'json',
+      cache: false,
+      success: function (response) {
+        if (this.props.onRemoveNote) {
+          this.props.onRemoveNote();
+        }
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(url, status, err.toString());
+      }.bind(this)
+    });
+  },
   onSelectLabel(value) {
     this.setState({
       selectedLabels: value
@@ -95,30 +112,22 @@ export default React.createClass({
   render() {
     let controlButtons = null;
     if (this.state.mode == 'read') {
-      controlButtons = (
-        <div className="mini right floated ui buttons">
-          <button className="ui red basic button">삭제</button>
-        </div>
-      );
+      controlButtons = (<button className="ui red basic button" onClick={this.onClickRemove}>삭제</button>);
     } else if (this.state.mode == 'edit') {
-      controlButtons = (
-        <div className="mini right floated ui buttons">
-          <button className="ui green basic button" onClick={this.onClickSave}>저장</button>
-        </div>
-      );
+      controlButtons = (<button className="ui green basic button" onClick={this.onClickSave}>저장</button>);
     }
 
     let selections = (
-      <select name="labels" multiple className="ui fluid selection dropdown label-selection">
-        {this.state.totalLabels.map(function (label) {
-          return (<option key={label.id} value={label.id}>{label.title}</option>);
-        }.bind(this))}
-      </select>);
+        <select name="labels"
+                multiple
+                className="ui fluid selection dropdown label-selection">
+          {this.state.totalLabels.map(function (label) {
+            return (<option key={label.id} value={label.id}>{label.title}</option>);
+          }.bind(this))}
+        </select>);
 
     return (
-      <div
-        onFocus={this.onFocusInput}
-        onBlur={this.onBlurInput}>
+      <div>
         <div className="ui grid note detail top">
           <div className="twelve wide column">
             <div className="ui huge transparent fluid input">
@@ -127,21 +136,28 @@ export default React.createClass({
                 placeholder="제목을 입력해주세요"
                 value={this.state.data.title}
                 onChange={this.handleChangeTitle}
+                onFocus={this.onFocusInput}
+                onBlur={this.onBlurInput}
               />
             </div>
           </div>
           <div className="right floated four wide column">
-            {controlButtons}
+            <div className="mini right floated ui buttons">
+              {controlButtons}
+            </div>
           </div>
         </div>
 
-        {selections}
+        <div onFocus={this.onFocusInput}
+          onBlur={this.onBlurInput}>
+          {selections}
 
-        <RichStyleEditor
-          id={this.state.data.id}
-          content={this.state.data.content}
-          onChangeContent={this.onChangeEditorContent}
-        />
+          <RichStyleEditor
+            id={this.state.data.id}
+            content={this.state.data.content}
+            onChangeContent={this.onChangeEditorContent}
+          />
+        </div>
       </div>
     )
   }

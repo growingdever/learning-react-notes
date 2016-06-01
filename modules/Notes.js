@@ -26,12 +26,12 @@ export default React.createClass({
         let nextState = {
           data: response.items
         };
-        if (response.items.length > 0) {
-          nextState.selectedNote = response.items[0];
-        }
 
         if (this.props.noteId) {
           nextState.selectedNote = response.items.find(note => note.id == this.props.noteId);
+        }
+        if (nextState.selectedNote == null && response.items.length > 0) {
+          nextState.selectedNote = response.items[0];
         }
 
         this.setState(nextState);
@@ -73,6 +73,9 @@ export default React.createClass({
       selectedNote: note
     });
   },
+  onRemoveNote() {
+    this.loadNotesFromServer(this.state.currentLabel);
+  },
   render() {
     return (
       <div className="twelve wide column">
@@ -98,6 +101,7 @@ export default React.createClass({
               data={this.state.selectedNote}
               totalLabels={this.state.totalLabels}
               onSaveNote={this.onSaveNote}
+              onRemoveNote={this.onRemoveNote}
             />
           </div>
         </div>
