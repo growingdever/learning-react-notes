@@ -16,15 +16,20 @@ export default React.createClass({
       label: nextProps.location.query.label
     });
   },
+  onLoadLabels(labels) {
+    this.setState({totalLabels: labels});
+  },
   render() {
     return (
       <div className="ui grid">
         <Labels
           label={this.state.label}
+          onLoadLabels={this.onLoadLabels}
         />
         <Notes
           noteId={this.state.noteId}
           label={this.state.label}
+          totalLabels={this.state.totalLabels}
         />
       </div>
     )

@@ -22,6 +22,9 @@ export default React.createClass({
       cache: false,
       success: function (response) {
         this.setState({data: response.items});
+        if (this.props.onLoadLabels) {
+          this.props.onLoadLabels(response.items);
+        }
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(url, status, err.toString());

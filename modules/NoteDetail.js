@@ -1,4 +1,5 @@
 import React from 'react'
+import jQuery from 'jquery'
 import RichStyleEditor from './rich-style-editor/RichStyleEditor'
 
 
@@ -7,14 +8,32 @@ export default React.createClass({
     return {
       mode: 'read',
       data: {
+        id: null,
         title: null,
-        content: null
-      }
+        content: null,
+        labels: []
+      },
+      totalLabels: []
     }
+  },
+  componentDidMount() {
+    // TODO : not working for jQuery('$' is loaded by index.html)
+    $('.ui.dropdown.label').dropdown({
+      action: 'activate',
+      onChange: this.onSelectLabel
+    });
   },
   componentWillReceiveProps(nextProps) {
     if (nextProps.data) {
       this.setState({data: nextProps.data});
+
+      if (this.state.data.id != nextProps.data.id) {
+        this.setState({selectedLabels: null});
+      }
+    }
+
+    if (nextProps.totalLabels) {
+      this.setState({totalLabels: nextProps.totalLabels});
     }
   },
   onFocusInput(e) {
@@ -44,7 +63,7 @@ export default React.createClass({
       data: JSON.stringify({
         title: this.state.data.title,
         content: this.state.data.content,
-        label_ids: []
+        label_ids: this.state.selectedLabels.map(label => Number.parseInt(label))
       }),
       cache: false,
       success: function (response) {
@@ -57,6 +76,11 @@ export default React.createClass({
       error: function (xhr, status, err) {
         console.error(url, status, err.toString());
       }.bind(this)
+    });
+  },
+  onSelectLabel(value) {
+    this.setState({
+      selectedLabels: value
     });
   },
   render() {
@@ -74,6 +98,13 @@ export default React.createClass({
         </div>
       );
     }
+
+    let selections = (
+      <select name="labels" multiple className="ui fluid selection dropdown label">
+        {this.state.totalLabels.map(function (label) {
+          return (<option key={label.id} value={label.id}>{label.title}</option>);
+        }.bind(this))}
+      </select>);
 
     return (
       <div
@@ -94,6 +125,9 @@ export default React.createClass({
             {controlButtons}
           </div>
         </div>
+
+        {selections}
+
         <RichStyleEditor
           id={this.state.data.id}
           content={this.state.data.content}

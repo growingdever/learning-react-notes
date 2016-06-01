@@ -8,7 +8,8 @@ export default React.createClass({
   getInitialState() {
     return {
       data: [],
-      label: this.props.label
+      label: this.props.label,
+      totalLabels: []
     };
   },
   loadNotesFromServer(label) {
@@ -42,7 +43,8 @@ export default React.createClass({
   },
   componentWillReceiveProps(nextProps) {
     let updatedState = {
-      label: nextProps.label
+      label: nextProps.label,
+      totalLabels: nextProps.totalLabels
     };
 
     if (nextProps.label != this.state.label) {
@@ -87,6 +89,7 @@ export default React.createClass({
           <div className="ten wide column">
             <NoteDetail
               data={this.state.selectedNote}
+              totalLabels={this.state.totalLabels}
               onSaveNote={this.onSaveNote}
             />
           </div>
