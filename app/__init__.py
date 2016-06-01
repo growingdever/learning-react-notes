@@ -36,7 +36,8 @@ def index():
 class APINotes(Resource):
     def get(self):
         if 'label' not in request.args or request.args['label'].lower() == 'all':
-            notes = [model_to_dict(item) for item in NoteModel.query.filter(NoteModel.user_id == 1).all()]
+            notes = NoteModel.query.filter(NoteModel.user_id == 1).order_by(NoteModel.updated_date.desc()).all()
+            notes = [model_to_dict(item) for item in notes]
             note_ids = [item['id'] for item in notes]
         else:
             note_ids = db.session.query(LabellingModel.note_id.label('id')). \
@@ -45,7 +46,8 @@ class APINotes(Resource):
                 filter(LabelModel.title == request.args['label']). \
                 all()
             note_ids = [int(item.id) for item in note_ids]
-            notes = [model_to_dict(item) for item in NoteModel.query.filter(NoteModel.id.in_(note_ids)).all()]
+            notes = NoteModel.query.filter(NoteModel.id.in_(note_ids)).order_by(NoteModel.updated_date.desc()).all()
+            notes = [model_to_dict(item) for item in notes]
 
         if len(notes) == 0:
             raise NotFound
@@ -91,9 +93,7 @@ class APINotes(Resource):
 
         db.session.commit()
 
-        return jsonify({
-            'items': [model_to_dict(item) for item in NoteModel.query.all()]
-        })
+        return self.get()
 
 
 @api_root.resource('/api/notes/<int:note_id>')
