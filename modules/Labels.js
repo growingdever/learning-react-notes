@@ -60,10 +60,7 @@ export default React.createClass({
             <Link to="/" className={allLabelClassName}>모든 메모</Link>
           </div>
           {this.state.data.map(function (label) {
-            let active = false;
-            if (label.title == this.props.currentLabel) {
-              active = true;
-            }
+            let active = label.title == this.props.currentLabel;
 
             return (
               <Label key={label.id} active={active} title={label.title}/>

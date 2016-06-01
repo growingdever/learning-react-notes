@@ -58,7 +58,7 @@ export default React.createClass({
 
     this.setState({data: newData});
   },
-  _onClickSave(e) {
+  onClickSave(e) {
     var url = 'http://localhost:5000/api/notes/' + this.state.data.id;
     jQuery.ajax({
       url: url,
@@ -99,7 +99,7 @@ export default React.createClass({
     } else if (this.state.mode == 'edit') {
       controlButtons = (
         <div className="mini right floated ui buttons">
-          <button className="ui green basic button" onClick={this._onClickSave}>저장</button>
+          <button className="ui green basic button" onClick={this.onClickSave}>저장</button>
         </div>
       );
     }
