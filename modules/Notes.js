@@ -8,6 +8,7 @@ export default React.createClass({
   getInitialState() {
     return {
       data: [],
+      currentLabel: this.props.currentLabel,
       totalLabels: []
     };
   },
@@ -42,7 +43,7 @@ export default React.createClass({
     });
   },
   componentDidMount() {
-    this.loadNotesFromServer(this.props.currentLabel);
+    this.loadNotesFromServer(this.state.currentLabel);
   },
   componentWillReceiveProps(nextProps) {
     let updatedState = {
@@ -60,6 +61,15 @@ export default React.createClass({
 
     this.setState(updatedState);
   },
+  onClickCreateNote(e) {
+    this.setState({
+      selectedNote: {
+        title: '',
+        content: '',
+        labels: []
+      }
+    });
+  },
   onClickItem(note) {
     this.setState({selectedNote: note});
   },
@@ -73,6 +83,12 @@ export default React.createClass({
       selectedNote: note
     });
   },
+  onCreateNote(data) {
+    this.setState({
+      data: data,
+      selectedNote: data[0]
+    });
+  },
   onRemoveNote() {
     this.loadNotesFromServer(this.state.currentLabel);
   },
@@ -81,6 +97,10 @@ export default React.createClass({
       <div className="twelve wide column">
         <div className="ui grid">
           <div className="six wide column">
+            <button type="button" className="ui fluid blue basic button" onClick={this.onClickCreateNote}>
+              새로운 메모 작성
+            </button>
+
             <div className="ui divided link items">
               {this.state.data.map(function (note) {
                 return (
@@ -99,8 +119,10 @@ export default React.createClass({
           <div className="ten wide column">
             <NoteDetail
               data={this.state.selectedNote}
+              currentLabel={this.state.currentLabel}
               totalLabels={this.state.totalLabels}
               onSaveNote={this.onSaveNote}
+              onCreateNote={this.onCreateNote}
               onRemoveNote={this.onRemoveNote}
             />
           </div>

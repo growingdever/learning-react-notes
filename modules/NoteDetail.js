@@ -27,24 +27,37 @@ export default React.createClass({
     if (nextProps.data) {
       this.setState({data: nextProps.data});
 
-      if (this.state.data.id != nextProps.data.id) {
-        this.setState({selectedLabels: nextProps.data.labels.map(label => String(label.id))});
+      if (nextProps.data.id) {
+        if (this.state.data.id != nextProps.data.id) {
+          this.setState({selectedLabels: nextProps.data.labels.map(label => String(label.id))});
+        }
+
+        $('.ui.dropdown.label-selection')
+            .dropdown('clear')
+            .dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
+      } else {
+        this.setState({mode: 'new'});
+        
+        
+        $('.ui.dropdown.label-selection')
+            .dropdown('clear');
       }
-
-      $('.ui.dropdown.label-selection')
-          .dropdown('clear')
-          .dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
     }
 
-    if (nextProps.totalLabels) {
-      this.setState({totalLabels: nextProps.totalLabels});
-    }
+    this.setState({
+      currentLabel: nextProps.currentLabel,
+      totalLabels: nextProps.totalLabels
+    });
   },
   onFocusInput(e) {
-    this.setState({mode: 'edit'});
+    if (this.state.mode != 'new') {
+      this.setState({mode: 'edit'});
+    }
   },
   onBlurInput(e) {
-    this.setState({mode: 'read'});
+    if (this.state.mode != 'new') {
+      this.setState({mode: 'read'});
+    }
   },
   handleChangeTitle(e) {
     let newData = this.state.data;
@@ -57,6 +70,33 @@ export default React.createClass({
     newData.content = content;
 
     this.setState({data: newData});
+  },
+  onClickCreate(e) {
+    var url = 'http://localhost:5000/api/notes';
+    if (this.state.currentLabel) {
+      url += '?label=' + this.state.currentLabel.replace(' ', '+');
+    }
+
+    jQuery.ajax({
+      url: url,
+      method: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        title: this.state.data.title,
+        content: this.state.data.content,
+        label_ids: this.state.selectedLabels.map(label => Number.parseInt(label))
+      }),
+      cache: false,
+      success: function (response) {
+        if (this.props.onCreateNote) {
+          this.props.onCreateNote(response.items);
+        }
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(url, status, err.toString());
+      }.bind(this)
+    });
   },
   onClickSave(e) {
     var url = 'http://localhost:5000/api/notes/' + this.state.data.id;
@@ -115,6 +155,8 @@ export default React.createClass({
       controlButtons = (<button className="ui red basic button" onClick={this.onClickRemove}>삭제</button>);
     } else if (this.state.mode == 'edit') {
       controlButtons = (<button className="ui green basic button" onClick={this.onClickSave}>저장</button>);
+    } else if (this.state.mode == 'new') {
+      controlButtons = (<button className="ui green basic button" onClick={this.onClickCreate}>생성</button>);
     }
 
     let selections = (
