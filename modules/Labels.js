@@ -41,6 +41,25 @@ export default React.createClass({
         .modal({detachable: false})
         .modal('show');
   },
+  onClickModifyTitle(label) {
+    var url = 'http://localhost:5000/api/labels/' + label.id;
+    jQuery.ajax({
+      url: url,
+      method: 'PUT',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        title: 'test1'
+      }),
+      cache: false,
+      success: function (response) {
+        this.loadLabelsFromServer();
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(url, status, err.toString());
+      }.bind(this)
+    });
+  },
   render() {
     let allLabelClassName = 'ui tag label';
     if (this.props.currentLabel == undefined) {
@@ -63,7 +82,12 @@ export default React.createClass({
             let active = label.title == this.props.currentLabel;
 
             return (
-              <Label key={label.id} active={active} title={label.title}/>
+              <Label
+                  key={label.id}
+                  active={active}
+                  label={label}
+                  onClickModifyTitle={this.onClickModifyTitle}
+              />
             );
           }.bind(this))}
         </div>
