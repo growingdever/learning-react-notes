@@ -13,6 +13,7 @@ export default React.createClass({
         content: null,
         labels: []
       },
+      selectedLabels: [],
       totalLabels: []
     }
   },
@@ -28,7 +29,7 @@ export default React.createClass({
       this.setState({data: nextProps.data});
 
       if (this.state.data.id != nextProps.data.id) {
-        this.setState({selectedLabels: null});
+        this.setState({selectedLabels: nextProps.data.labels.map(label => String(label.id))});
       }
 
       $('.ui.dropdown.label-selection')
@@ -72,7 +73,11 @@ export default React.createClass({
       }),
       cache: false,
       success: function (response) {
-        this.setState({data: response.item});
+        let nextState = {
+          data: response.item,
+          selectedLabels: response.item.labels.map(label => String(label.id))
+        };
+        this.setState(nextState);
 
         if (this.props.onSaveNote) {
           this.props.onSaveNote(response.item);

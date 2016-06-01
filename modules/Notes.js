@@ -62,14 +62,16 @@ export default React.createClass({
   },
   onClickItem(note) {
     this.setState({selectedNote: note});
-    this.forceUpdate();
   },
   onSaveNote(note) {
     let data = this.state.data;
     let targetIndex = data.findIndex(item => item.id == note.id);
     data[targetIndex] = note;
 
-    this.setState({data: data});
+    this.setState({
+      data: data,
+      selectedNote: note
+    });
   },
   render() {
     return (
