@@ -28,6 +28,8 @@ export default React.createClass({
       this.setState({data: nextProps.data});
 
       if (nextProps.data.id) {
+        this.setState({mode: 'read'});
+
         if (this.state.data.id != nextProps.data.id) {
           this.setState({selectedLabels: nextProps.data.labels.map(label => String(label.id))});
         }
