@@ -30,6 +30,8 @@ export default React.createClass({
       if (this.state.data.id != nextProps.data.id) {
         this.setState({selectedLabels: null});
       }
+
+      $('.ui.dropdown.label').dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
     }
 
     if (nextProps.totalLabels) {
