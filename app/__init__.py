@@ -162,6 +162,23 @@ class APINote(Resource):
             'item': note
         })
 
+    def delete(self, note_id):
+        labellings = LabellingModel.query. \
+            filter(LabellingModel.user_id == 1). \
+            filter(LabellingModel.note_id == note_id). \
+            all()
+        for item in labellings:
+            db.session.delete(item)
+
+        note = NoteModel.query.filter(NoteModel.user_id == 1).filter(NoteModel.id == note_id).first()
+        db.session.delete(note)
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True
+        })
+
 
 @api_root.resource('/api/labels')
 class APILabels(Resource):
