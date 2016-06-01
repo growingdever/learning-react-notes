@@ -13,6 +13,10 @@ export default React.createClass({
         content: null,
         labels: []
       },
+      edited: {
+        title: null,
+        content: null
+      },
       selectedLabels: [],
       totalLabels: []
     }
@@ -20,32 +24,32 @@ export default React.createClass({
   componentDidMount() {
     // TODO : not working for jQuery('$' is loaded by index.html)
     $('.ui.dropdown.label-selection').dropdown({
-      onChange: this.onSelectLabel
+      onChange: this.onChangeSelectedLabels
     });
   },
   componentWillReceiveProps(nextProps) {
     if (nextProps.data) {
-      this.setState({data: nextProps.data});
+      let labelIds = nextProps.data.labels.map(label => String(label.id));
+      labelIds.sort();
 
-      if (nextProps.data.id) {
-        this.setState({mode: 'read'});
+      this.setState({
+        data: nextProps.data,
+        edited: {
+          title: nextProps.data.title,
+          content: nextProps.data.content
+        },
+        selectedLabels: labelIds
+      });
+      // TODO : is it correct way?
+      this.state.data = nextProps.data;
+      this.state.edited = {title: nextProps.data.title, content: nextProps.data.content};
+      this.selectedLabels = labelIds;
 
-        if (this.state.data.id != nextProps.data.id) {
-          this.setState({selectedLabels: nextProps.data.labels.map(label => String(label.id))});
-        }
+      $('.ui.dropdown.label-selection')
+          .dropdown('clear')
+          .dropdown('set selected', labelIds);
 
-        $('.ui.dropdown.label-selection')
-            .dropdown('clear')
-            .dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
-      } else {
-        this.setState({
-          mode: 'new',
-          selectedLabels: []
-        });
-        
-        $('.ui.dropdown.label-selection')
-            .dropdown('clear');
-      }
+      this.updateMode();
     }
 
     this.setState({
@@ -53,27 +57,63 @@ export default React.createClass({
       totalLabels: nextProps.totalLabels
     });
   },
-  onFocusInput(e) {
-    if (this.state.mode != 'new') {
-      this.setState({mode: 'edit'});
-    }
-  },
-  onBlurInput(e) {
-    if (this.state.mode != 'new') {
-      this.setState({mode: 'read'});
-    }
-  },
   handleChangeTitle(e) {
-    let newData = this.state.data;
-    newData.title = e.target.value;
+    this.setState({
+      edited: {
+        title: e.target.value,
+        content: this.state.edited.content
+      }
+    });
+    // TODO : is it correct way?
+    this.state.edited.title = e.target.value;
 
-    this.setState({data: newData});
+    this.updateMode();
   },
   onChangeEditorContent(content) {
-    let newData = this.state.data;
-    newData.content = content;
+    this.setState({
+      edited: {
+        title: this.state.edited.title,
+        content: content
+      }
+    });
+    // TODO : is it correct way?
+    this.state.edited.content = content;
 
-    this.setState({data: newData});
+    this.updateMode();
+  },
+  onChangeSelectedLabels(value) {
+    if (value == '') {
+      value = []
+    }
+
+    value.sort();
+
+    this.setState({
+      selectedLabels: value
+    });
+    // TODO : is it correct way?
+    this.state.selectedLabels = value;
+
+    this.updateMode();
+  },
+  updateMode() {
+    let prevSelectedLabels = this.state.data.labels.map(label => String(label.id));
+    let currentSelectedLabels = this.state.selectedLabels;
+
+    let cond1 = this.state.data.title == this.state.edited.title;
+    let cond2 = this.state.data.content == this.state.edited.content;
+    let cond3 = prevSelectedLabels.length == currentSelectedLabels.length
+        && prevSelectedLabels.every((v, i) => v === currentSelectedLabels[i]);
+
+    if (cond1 && cond2 && cond3) {
+      this.setState({mode: 'read'});
+    } else {
+      let mode = 'edit';
+      if (!this.state.data.id) {
+        mode = 'new';
+      }
+      this.setState({mode: mode});
+    }
   },
   onClickCreate(e) {
     var url = 'http://localhost:5000/api/notes';
@@ -87,8 +127,8 @@ export default React.createClass({
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify({
-        title: this.state.data.title,
-        content: this.state.data.content,
+        title: this.state.edited.title,
+        content: this.state.edited.content,
         label_ids: this.state.selectedLabels.map(label => Number.parseInt(label))
       }),
       cache: false,
@@ -110,8 +150,8 @@ export default React.createClass({
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify({
-        title: this.state.data.title,
-        content: this.state.data.content,
+        title: this.state.edited.title,
+        content: this.state.edited.content,
         label_ids: this.state.selectedLabels.map(label => Number.parseInt(label))
       }),
       cache: false,
@@ -148,15 +188,6 @@ export default React.createClass({
       }.bind(this)
     });
   },
-  onSelectLabel(value) {
-    if (value == '') {
-      value = []
-    }
-
-    this.setState({
-      selectedLabels: value
-    });
-  },
   render() {
     let controlButtons = null;
     if (this.state.mode == 'read') {
@@ -184,10 +215,8 @@ export default React.createClass({
               <input
                 type="text"
                 placeholder="제목을 입력해주세요"
-                value={this.state.data.title}
+                value={this.state.edited.title}
                 onChange={this.handleChangeTitle}
-                onFocus={this.onFocusInput}
-                onBlur={this.onBlurInput}
               />
             </div>
           </div>
@@ -198,16 +227,13 @@ export default React.createClass({
           </div>
         </div>
 
-        <div onFocus={this.onFocusInput}
-          onBlur={this.onBlurInput}>
-          {selections}
+        {selections}
 
-          <RichStyleEditor
-            id={this.state.data.id}
-            content={this.state.data.content}
-            onChangeContent={this.onChangeEditorContent}
-          />
-        </div>
+        <RichStyleEditor
+          id={this.state.data.id}
+          content={this.state.edited.content}
+          onChangeContent={this.onChangeEditorContent}
+        />
       </div>
     )
   }
