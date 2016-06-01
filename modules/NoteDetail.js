@@ -49,9 +49,10 @@ export default React.createClass({
     this.setState({data: newData});
   },
   onChangeEditorContent(content) {
-    let prevData = this.state.data;
-    prevData.content = content;
-    this.setState({data: prevData})
+    let newData = this.state.data;
+    newData.content = content;
+
+    this.setState({data: newData});
   },
   _onClickSave(e) {
     var url = 'http://localhost:5000/api/notes/' + this.state.data.id;
