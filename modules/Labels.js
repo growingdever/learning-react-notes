@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router'
-import Label from './Label'
 import jQuery from 'jquery'
+import CreateLabelModal from './CreateLabelModal'
+import Label from './Label'
 
 
 export default React.createClass({
@@ -15,6 +16,9 @@ export default React.createClass({
     };
   },
   componentDidMount() {
+    this.loadLabelsFromServer();
+  },
+  loadLabelsFromServer() {
     var url = 'http://localhost:5000/api/labels';
     jQuery.ajax({
       url: url,
@@ -22,6 +26,7 @@ export default React.createClass({
       cache: false,
       success: function (response) {
         this.setState({data: response.items});
+
         if (this.props.onLoadLabels) {
           this.props.onLoadLabels(response.items);
         }
@@ -31,25 +36,10 @@ export default React.createClass({
       }.bind(this)
     });
   },
-  handleNewLabelNameChange(e) {
-    this.setState({new_label_name: e.target.value});
-  },
-  createLabel(e) {
-    var url = 'http://localhost:5000/api/labels';
-    jQuery.ajax({
-      url: url,
-      method: 'POST',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({ title: this.state.new_label_name }),
-      cache: false,
-      success: function (response) {
-        this.setState({data: response.items});
-      }.bind(this),
-      error: function (xhr, status, err) {
-        console.error(url, status, err.toString());
-      }.bind(this)
-    });
+  onClickCreateLabel() {
+    $('.ui.modal.new-label')
+        .modal({detachable: false})
+        .modal('show');
   },
   render() {
     let allLabelClassName = 'ui tag label';
@@ -59,12 +49,11 @@ export default React.createClass({
 
     return (
       <div className="four wide column">
-        <input
-          type="text"
-          placeholder="New label name"
-          value={this.state.new_label_name}
-          onChange={this.handleNewLabelNameChange}/>
-        <button type="button" onClick={this.createLabel}>Create</button>
+        <button type="button" className="ui fluid green basic button" onClick={this.onClickCreateLabel}>
+          라벨 생성
+        </button>
+
+        <CreateLabelModal onCreateLabel={this.loadLabelsFromServer}/>
 
         <div className="ui relaxed divided list">
           <div className="item">
