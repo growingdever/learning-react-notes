@@ -36,8 +36,10 @@ export default React.createClass({
             .dropdown('clear')
             .dropdown('set selected', nextProps.data.labels.map(label => String(label.id)));
       } else {
-        this.setState({mode: 'new'});
-        
+        this.setState({
+          mode: 'new',
+          selectedLabels: []
+        });
         
         $('.ui.dropdown.label-selection')
             .dropdown('clear');
@@ -145,6 +147,10 @@ export default React.createClass({
     });
   },
   onSelectLabel(value) {
+    if (value == '') {
+      value = []
+    }
+
     this.setState({
       selectedLabels: value
     });
