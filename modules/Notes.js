@@ -31,6 +31,10 @@ export default React.createClass({
           nextState.selectedNote = response.items[0];
         }
 
+        if (this.props.noteId) {
+          nextState.selectedNote = response.items.find(note => note.id == this.props.noteId);
+        }
+
         this.setState(nextState);
       }.bind(this),
       error: function(xhr, status, err) {
