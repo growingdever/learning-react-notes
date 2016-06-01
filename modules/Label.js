@@ -8,6 +8,11 @@ export default React.createClass({
       this.props.onClickModifyTitle(this.props.label);
     }
   },
+  onClickDelete() {
+    if (this.props.onClickDelete) {
+      this.props.onClickDelete(this.props.label);
+    }
+  },
   render() {
     let className = 'ui tag label';
     if (this.props.active) {
@@ -20,7 +25,7 @@ export default React.createClass({
         <div className="item right floated">
           <div className="ui mini basic icon buttons">
             <button className="ui button" onClick={this.onClickModifyTitleButton}><i className="write icon"></i></button>
-            <button className="ui button"><i className="trash icon"></i></button>
+            <button className="ui button" onClick={this.onClickDelete}><i className="trash icon"></i></button>
           </div>
         </div>
       );

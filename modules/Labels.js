@@ -4,6 +4,7 @@ import jQuery from 'jquery'
 import Label from './Label'
 import CreateLabelModal from './CreateLabelModal'
 import ModifyLabelTitleModal from './ModifyLabelTitleModal'
+import DeleteLabelModal from './DeleteLabelModal'
 
 
 export default React.createClass({
@@ -49,6 +50,13 @@ export default React.createClass({
     
     this.setState({targetModifyLabel: label});
   },
+  onClickDelete(label) {
+    $('.ui.modal.delete-label')
+        .modal({detachable: false})
+        .modal('show');
+
+    this.setState({targetDeleteLabel: label});
+  },
   render() {
     let allLabelClassName = 'ui tag label';
     if (this.props.currentLabel == undefined) {
@@ -63,6 +71,7 @@ export default React.createClass({
 
         <CreateLabelModal onCreateLabel={this.loadLabelsFromServer}/>
         <ModifyLabelTitleModal label={this.state.targetModifyLabel} onSuccess={this.loadLabelsFromServer}/>
+        <DeleteLabelModal label={this.state.targetDeleteLabel} onSuccess={this.loadLabelsFromServer}/>
 
         <div className="ui relaxed divided list">
           <div className="item">
@@ -75,6 +84,7 @@ export default React.createClass({
                   active={label.title == this.props.currentLabel}
                   label={label}
                   onClickModifyTitle={this.onClickModifyTitle}
+                  onClickDelete={this.onClickDelete}
               />
             );
           }.bind(this))}
