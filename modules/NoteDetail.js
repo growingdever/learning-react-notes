@@ -32,14 +32,6 @@ export default React.createClass({
       let labelIds = nextProps.data.labels.map(label => String(label.id));
       labelIds.sort();
 
-      let prevSelectedLabels = this.state.selectedLabels;
-      for (let prevSelectedLabel of prevSelectedLabels) {
-        if (labelIds.indexOf(prevSelectedLabel) == -1) {
-          let selectorQuery = '.ui.dropdown.label-selection > a[data-value="' + prevSelectedLabel + '"]';
-          $(selectorQuery).remove();
-        }
-      }
-
       this.setState({
         data: nextProps.data,
         edited: {
@@ -55,7 +47,7 @@ export default React.createClass({
 
       $('.ui.dropdown.label-selection')
           .dropdown('clear')
-          .dropdown('set selected', labelIds);
+          .dropdown('set exactly', labelIds);
 
       // update already selected label's title
       for (var prevLabel of this.state.totalLabels) {
