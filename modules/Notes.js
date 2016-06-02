@@ -51,6 +51,18 @@ export default React.createClass({
       totalLabels: nextProps.totalLabels
     };
 
+    if (nextProps.noteId) {
+      updatedState.selectedNote = this.state.data.find(item => item.id == nextProps.noteId);
+    }
+
+    let removedLabels = [];
+    let prevTotalLabelIds = this.state.totalLabels.map(label => label.id);
+    for (let prevLabel of prevTotalLabelIds) {
+      if (nextProps.totalLabels.indexOf(prevLabel.id) == -1) {
+        removedLabels.push(label);
+      }
+    }
+
     for (var note of this.state.data) {
       for (var label of note.labels) {
         for (var modifiedLabel of updatedState.totalLabels) {
@@ -61,12 +73,9 @@ export default React.createClass({
       }
     }
 
-    if (nextProps.currentLabel != this.state.currentLabel) {
+    let shouldReloadNotes = removedLabels.length > 0 || nextProps.currentLabel != this.state.currentLabel;
+    if (shouldReloadNotes) {
       this.loadNotesFromServer(nextProps.currentLabel);
-    }
-
-    if (nextProps.noteId) {
-      updatedState.selectedNote = this.state.data.find(item => item.id == nextProps.noteId);
     }
 
     this.setState(updatedState);
