@@ -43,11 +43,11 @@ export default React.createClass({
       // TODO : is it correct way?
       this.state.data = nextProps.data;
       this.state.edited = {title: nextProps.data.title, content: nextProps.data.content};
-      this.selectedLabels = labelIds;
+      this.state.selectedLabels = labelIds;
 
       $('.ui.dropdown.label-selection')
           .dropdown('clear')
-          .dropdown('set selected', labelIds);
+          .dropdown('set exactly', labelIds);
 
       this.updateMode();
     }
