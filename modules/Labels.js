@@ -50,12 +50,18 @@ export default React.createClass({
     
     this.setState({targetModifyLabel: label});
   },
+  onModifyLabel(label) {
+    this.props.onModifyLabel(label);
+  },
   onClickDelete(label) {
     $('.ui.modal.delete-label')
         .modal({detachable: false})
         .modal('show');
 
     this.setState({targetDeleteLabel: label});
+  },
+  onDeleteLabel(label) {
+    this.props.onDeleteLabel(label);
   },
   render() {
     let allLabelClassName = 'ui tag label';

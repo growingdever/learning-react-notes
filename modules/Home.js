@@ -19,6 +19,12 @@ export default React.createClass({
   onLoadLabels(labels) {
     this.setState({totalLabels: labels});
   },
+  onModifyLabel(modifiedLabel) {
+    let prevTotalLabels = this.state.totalLabels;
+    let target = prevTotalLabels.find(label => label.id == modifiedLabel.id);
+    target.title = modifiedLabel.title;
+    this.setState({totalLabels: prevTotalLabels});
+  },
   render() {
     return (
       <div className="ui grid">

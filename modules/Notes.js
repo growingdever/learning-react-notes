@@ -51,6 +51,16 @@ export default React.createClass({
       totalLabels: nextProps.totalLabels
     };
 
+    for (var note of this.state.data) {
+      for (var label of note.labels) {
+        for (var modifiedLabel of updatedState.totalLabels) {
+          if (label.id == modifiedLabel.id) {
+            label.title = modifiedLabel.title;
+          }
+        }
+      }
+    }
+
     if (nextProps.currentLabel != this.state.currentLabel) {
       this.loadNotesFromServer(nextProps.currentLabel);
     }
