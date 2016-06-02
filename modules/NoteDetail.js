@@ -49,6 +49,19 @@ export default React.createClass({
           .dropdown('clear')
           .dropdown('set exactly', labelIds);
 
+      // update already selected label's title
+      for (var prevLabel of this.state.totalLabels) {
+        for (var newLabel of nextProps.totalLabels) {
+          if (prevLabel.id == newLabel.id && prevLabel.title != newLabel.title) {
+            var selectorQuery = '.ui.dropdown.label-selection > a[data-value="' + prevLabel.id + '"]';
+            var elem = $(selectorQuery);
+            if (elem) {
+              elem.text(newLabel.title);
+            }
+          }
+        }
+      }
+
       this.updateMode();
     }
 
